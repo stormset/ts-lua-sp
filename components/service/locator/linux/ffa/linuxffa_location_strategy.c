@@ -13,6 +13,7 @@
 #include "components/service/crypto/provider/crypto_uuid.h"
 #include "components/service/fwu/provider/fwu_uuid.h"
 #include "components/service/rpmb/provider/rpmb_uuid.h"
+#include "components/service/lua/provider/lua_uuid.h"
 #include "components/service/secure_storage/frontend/secure_storage_provider/secure_storage_uuid.h"
 #include "components/service/test_runner/provider/test_runner_uuid.h"
 #include <stddef.h>
@@ -68,6 +69,7 @@ static const struct rpc_uuid *suggest_ts_service_uuids(const char *sn)
 		{"block-storage",               {.uuid = TS_BLOCK_STORAGE_SERVICE_UUID}},
 		{"fwu",                         {.uuid = TS_FWU_SERVICE_UUID}},
 		{"rpmb",			{.uuid = TS_RPMB_SERVICE_UUID}},
+		{"lua",                         {.uuid = TS_LUA_SERVICE_UUID}},
 		{NULL,                          {.uuid = {0}}}
 	};
 
