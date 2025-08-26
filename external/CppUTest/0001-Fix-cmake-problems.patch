@@ -1,0 +1,80 @@
+From fd7cafcc94598e7ea77e90fe4851a573e85e41d5 Mon Sep 17 00:00:00 2001
+From: Gyorgy Szing <gyorgy.szing@arm.com>
+Date: Mon, 28 Jul 2025 17:36:54 +0200
+Subject: [PATCH 1/2] Fix cmake problems
+
+- Only export the CppUTestExt target if it exists. This depends on build
+  configuration.
+- Change CPP_PLATFORM to be a cache variable to allow overriding the
+  value form the CMake command line.
+- Do not hardcode the extension of the winmm library on Windows.
+
+Signed-off-by: Gyorgy Szing <gyorgy.szing@arm.com>
+---
+ CMakeLists.txt                                   | 7 ++++++-
+ cmake/Modules/CppUTestConfigurationOptions.cmake | 6 +++---
+ src/CppUTest/CMakeLists.txt                      | 2 +-
+ 3 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b1900bb3..d9ca865f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -116,8 +116,13 @@ if(PkgHelpers_AVAILABLE)
+     ${CMAKE_CURRENT_BINARY_DIR}/CppUTestConfig.cmake
+     INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+     PATH_VARS INCLUDE_DIR CMAKE_CURRENT_BINARY_DIR)
+-  export(TARGETS CppUTest CppUTestExt
++  if(TARGET CppUTestExt)
++    export(TARGETS CppUTest
+     FILE "${CMAKE_CURRENT_BINARY_DIR}/CppUTestTargets.cmake")
++  else()
++    export(TARGETS CppUTest
++    FILE "${CMAKE_CURRENT_BINARY_DIR}/CppUTestTargets.cmake")
++  endif()
+   write_basic_package_version_file(
+     ${CMAKE_CURRENT_BINARY_DIR}/CppUTestConfigVersion.cmake
+     VERSION ${CppUTest_version_major}.${CppUTest_version_minor}
+diff --git a/cmake/Modules/CppUTestConfigurationOptions.cmake b/cmake/Modules/CppUTestConfigurationOptions.cmake
+index 634482ce..a00b5eb0 100644
+--- a/cmake/Modules/CppUTestConfigurationOptions.cmake
++++ b/cmake/Modules/CppUTestConfigurationOptions.cmake
+@@ -1,19 +1,19 @@
+ if (MSVC)
+-    set(CPP_PLATFORM VisualCpp)
++    set(CPP_PLATFORM VisualCpp CACHE STRING "CppUTest platform.")
+     include_directories(${CppUTestRootDirectory}/include/Platforms/${CPP_PLATFORM})
+     option(STDC_WANT_SECURE_LIB "Use MSVC safe functions" ON)
+     if(STDC_WANT_SECURE_LIB)
+       ADD_DEFINITIONS(-DSTDC_WANT_SECURE_LIB)
+     endif(STDC_WANT_SECURE_LIB)
+ elseif (STD_C)
+-    set(CPP_PLATFORM Gcc)
++    set(CPP_PLATFORM Gcc CACHE STRING "CppUTest platform.")
+ else (MSVC)
+     set(STD_CPP False)
+     set(MEMORY_LEAK_DETECTION False)
+     set(CPPUTEST_CXX_FLAGS "${CPPUTEST_CXX_FLAGS} -nostdinc")
+     set(CPPUTEST_LD_FLAGS "${CPPUTEST_LD_FLAGS} -nostdinc")
+     set(CPPUTEST_STD_C_LIB_DISABLED 1)
+-    set(CPP_PLATFORM GccNoStdC)
++    set(CPP_PLATFORM GccNoStdC CACHE STRING "CppUTest platform.")
+ endif (MSVC)
+ 
+ include("${CppUTestRootDirectory}/cmake/Modules/CppUTestWarningFlags.cmake")
+diff --git a/src/CppUTest/CMakeLists.txt b/src/CppUTest/CMakeLists.txt
+index 736777f5..d9a592f2 100644
+--- a/src/CppUTest/CMakeLists.txt
++++ b/src/CppUTest/CMakeLists.txt
+@@ -50,7 +50,7 @@ set(CppUTest_headers
+ 
+ add_library(CppUTest STATIC ${CppUTest_src} ${CppUTest_headers})
+ if (WIN32)
+-    target_link_libraries(CppUTest winmm.lib)
++    target_link_libraries(CppUTest winmm)
+ endif (WIN32)
+ install(FILES ${CppUTest_headers} DESTINATION include/CppUTest)
+ install(TARGETS CppUTest
+-- 
+2.34.1
+
