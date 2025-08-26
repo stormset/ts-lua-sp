@@ -1,0 +1,26 @@
+From 1fa1c033c98afed99241471782101f1ddd94a066 Mon Sep 17 00:00:00 2001
+From: Gabor Ambrus <agabor.ambrus@gmail.com>
+Date: Tue, 26 Aug 2025 03:25:57 +0200
+Subject: [PATCH] Make OPENLIBM_ARCH_FOLDER CACHE STRING so target architecture
+ can be overriden
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 615321a..a40d44b 100755
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -13,7 +13,7 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+ add_library("${PROJECT_NAME}")
+ 
+ # Find the relevant folder depending on the architecture
+-set(OPENLIBM_ARCH_FOLDER ${CMAKE_SYSTEM_PROCESSOR})
++set(OPENLIBM_ARCH_FOLDER ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "OpenLibm target architecture")
+ string(TOLOWER "${OPENLIBM_ARCH_FOLDER}" OPENLIBM_ARCH_FOLDER)
+ 
+ if(${OPENLIBM_ARCH_FOLDER} STREQUAL "amd64" OR ${OPENLIBM_ARCH_FOLDER} STREQUAL "x86_64")
+-- 
+2.25.1
+

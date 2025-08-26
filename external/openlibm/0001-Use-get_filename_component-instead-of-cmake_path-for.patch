@@ -1,0 +1,40 @@
+From 5416a0ccb684d98246c847340622bb1a8a67dc0c Mon Sep 17 00:00:00 2001
+From: Gabor Ambrus <agabor.ambrus@gmail.com>
+Date: Tue, 26 Aug 2025 03:24:14 +0200
+Subject: [PATCH] Use get_filename_component instead of cmake_path for CMake
+ 3.18 compatibility
+
+---
+ CMakeLists.txt | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index f46f037..615321a 100755
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-cmake_minimum_required(VERSION 3.25)
++cmake_minimum_required(VERSION 3.18)
+ 
+ # Get version string from Make.inc
+ file(READ "${CMAKE_CURRENT_LIST_DIR}/Make.inc" MAKE_FILE)
+@@ -516,14 +516,12 @@ endif()
+ # Filter out C implementation from compilation list if a native implementation exists
+ foreach(FILE_TO_REMOVE ${OPENLIBM_ASM_SOURCE})
+     # Get filename and strip out extension
+-    cmake_path(GET FILE_TO_REMOVE FILENAME FILENAME_TO_REMOVE)
+-    cmake_path(REMOVE_EXTENSION FILENAME_TO_REMOVE OUTPUT_VARIABLE FILENAME_TO_REMOVE)
++    get_filename_component(FILENAME_TO_REMOVE ${FILE_TO_REMOVE} NAME_WE)
+     message(DEBUG "Filename to remove: ${FILENAME_TO_REMOVE}")
+ 
+     # Go through files and remove one with the same name
+     foreach(CUR_FILE ${OPENLIBM_C_SOURCE})
+-        cmake_path(GET CUR_FILE FILENAME CUR_FILENAME)
+-        cmake_path(REMOVE_EXTENSION CUR_FILENAME OUTPUT_VARIABLE CUR_FILENAME)
++        get_filename_component(CUR_FILENAME ${CUR_FILE} NAME_WE)
+ 
+         if(${CUR_FILENAME} STREQUAL ${FILENAME_TO_REMOVE})
+             list(REMOVE_ITEM OPENLIBM_C_SOURCE ${CUR_FILE})
+-- 
+2.25.1
+
