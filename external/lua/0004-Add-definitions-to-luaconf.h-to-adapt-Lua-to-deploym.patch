@@ -1,0 +1,65 @@
+From 3d4f3ac817f290d051337f3929e9967e9c3c380a Mon Sep 17 00:00:00 2001
+From: Gabor Ambrus <agabor.ambrus@gmail.com>
+Date: Tue, 26 Aug 2025 01:17:48 +0000
+Subject: [PATCH] Add definitions to luaconf.h to adapt Lua to deployment in an
+ SP environment
+
+---
+ lua-5.4.5/include/luaconf.h | 41 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/lua-5.4.5/include/luaconf.h b/lua-5.4.5/include/luaconf.h
+index 137103e..ee1c0a5 100644
+--- a/lua-5.4.5/include/luaconf.h
++++ b/lua-5.4.5/include/luaconf.h
+@@ -11,6 +11,47 @@
+ #include <limits.h>
+ #include <stddef.h>
+ 
++/* 
++*  Clock and time are used in math (lmathlib) and table (ltablib) libraries
++*  for randomization (e.g. pivot selection in sorting algorithm).
++*  Here we define simple stubs for these returning 0.
++*/
++#ifndef CLOCK_DEFINED
++#define CLOCK_DEFINED
++typedef int clock_t;
++static inline clock_t clock(void) { return 0; }
++#endif
++
++#ifndef TIME_DEFINED
++#define TIME_DEFINED
++#include <time.h>
++
++static inline time_t time(time_t *t) {
++    if (t) *t = 0;
++    return 0;
++}
++#endif
++
++/* 
++*  Define stubs for I/O operations.
++*  These internally call fwrite and fprintf, that is currently not implemented
++*  in OPTEE SP environments.
++*/
++#ifndef IO_DEFINED
++#define IO_DEFINED
++
++#define FILE void
++#define stdout ((FILE *)0)
++#define stderr ((FILE *)1)
++
++#define lua_writestring(s,p) ((void)s, (void)p)
++#define lua_writeline() {}
++#define lua_writestringerror(s,p) ((void)s, (void)p)
++
++#endif
++
++/*  Define signal type. Used for hooks (e.g externally interrupting Lua VM) */
++#define l_signalT int
+ 
+ /*
+ ** ===================================================================
+-- 
+2.17.1
+

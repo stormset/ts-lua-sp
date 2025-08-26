@@ -1,0 +1,54 @@
+#-------------------------------------------------------------------------------
+# Copyright (c) 2025, Arm Limited and Contributors. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+#-------------------------------------------------------------------------------
+
+set(CMAKE_INSTALL_PREFIX "@BUILD_INSTALL_DIR@" CACHE STRING "")
+set(CMAKE_TOOLCHAIN_FILE "@TS_EXTERNAL_LIB_TOOLCHAIN_FILE@" CACHE STRING "")
+set(BRANCH_PROTECTION @BRANCH_PROTECTION@ CACHE STRING "")
+
+set(LUA_BUILD_BINARY OFF CACHE BOOL "Disable building Lua binary")
+set(LUA_BUILD_COMPILER OFF CACHE BOOL "Disable building luac compiler")
+set(LUA_ENABLE_SHARED OFF CACHE BOOL "Disable creation of Lua shared library")
+set(LUA_ENABLE_TESTING OFF CACHE BOOL "Disable compiling Lua tests")
+
+set(LUA_LIB_SRCS
+    "src/lapi.c"
+    "src/lcode.c"
+    "src/lctype.c"
+    "src/ldebug.c"
+    "src/ldo.c"
+    "src/ldump.c"
+    "src/lfunc.c"
+    "src/lgc.c"
+    "src/llex.c"
+    "src/lmem.c"
+    "src/lobject.c"
+    "src/lopcodes.c"
+    "src/lparser.c"
+    "src/lstate.c"
+    "src/lstring.c"
+    "src/ltable.c"
+    "src/ltm.c"
+    "src/lundump.c"
+    "src/lvm.c"
+    "src/lzio.c"
+    "src/lauxlib.c"
+    "src/lbaselib.c"
+    "src/lcorolib.c"
+    # removed: "src/ldblib.c"
+    # removed: "src/liolib.c"
+    "src/lmathlib.c"
+    # removed: "src/loadlib.c"
+    # removed: "src/loslib.c"
+    "src/lstrlib.c"
+    "src/ltablib.c"
+    "src/lutf8lib.c"
+    "src/linit.c"
+	CACHE STRING "Lua source files"
+)
+
+@_libc_fragment@
+@_openlibm_fragment@

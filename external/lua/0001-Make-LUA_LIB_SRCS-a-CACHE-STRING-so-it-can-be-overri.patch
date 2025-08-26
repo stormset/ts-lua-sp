@@ -1,0 +1,24 @@
+From 7eac00d1c22df208b98d6c6c285583f998c188bf Mon Sep 17 00:00:00 2001
+From: Gabor Ambrus <agabor.ambrus@gmail.com>
+Date: Tue, 26 Aug 2025 01:07:27 +0000
+Subject: [PATCH] Make LUA_LIB_SRCS a CACHE STRING so it can be overriden
+
+---
+ lua-5.4.5/CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lua-5.4.5/CMakeLists.txt b/lua-5.4.5/CMakeLists.txt
+index 58cf579..43788ff 100644
+--- a/lua-5.4.5/CMakeLists.txt
++++ b/lua-5.4.5/CMakeLists.txt
+@@ -31,6 +31,7 @@ set(LUA_LIB_SRCS
+     "src/ltablib.c"
+     "src/lutf8lib.c"
+     "src/linit.c"
++    CACHE STRING "Lua source files"
+ )
+ 
+ set(TARGETS_TO_INSTALL lua_internal lua_include)
+-- 
+2.17.1
+

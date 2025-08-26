@@ -1,0 +1,39 @@
+From 4a1f77b8eb90eaac9adaaae9840dc78ef70082bf Mon Sep 17 00:00:00 2001
+From: Gabor Ambrus <agabor.ambrus@gmail.com>
+Date: Tue, 26 Aug 2025 01:10:51 +0000
+Subject: [PATCH] Adopt string copy functions to libc
+
+---
+ lua-5.4.5/src/lobject.c | 2 +-
+ lua-5.4.5/src/lstrlib.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lua-5.4.5/src/lobject.c b/lua-5.4.5/src/lobject.c
+index f73ffc6..76d96f8 100644
+--- a/lua-5.4.5/src/lobject.c
++++ b/lua-5.4.5/src/lobject.c
+@@ -260,7 +260,7 @@ static const char *l_str2d (const char *s, lua_Number *result) {
+     const char *pdot = strchr(s, '.');
+     if (pdot == NULL || strlen(s) > L_MAXLENNUM)
+       return NULL;  /* string too long or no dot; fail */
+-    strcpy(buff, s);  /* copy string to buffer */
++    strlcpy(buff, s, sizeof(buff));  /* copy string to buffer */
+     buff[pdot - s] = lua_getlocaledecpoint();  /* correct decimal point */
+     endptr = l_str2dloc(buff, result, mode);  /* try again */
+     if (endptr != NULL)
+diff --git a/lua-5.4.5/src/lstrlib.c b/lua-5.4.5/src/lstrlib.c
+index 0316716..4290857 100644
+--- a/lua-5.4.5/src/lstrlib.c
++++ b/lua-5.4.5/src/lstrlib.c
+@@ -1264,7 +1264,7 @@ static void addlenmod (char *form, const char *lenmod) {
+   size_t l = strlen(form);
+   size_t lm = strlen(lenmod);
+   char spec = form[l - 1];
+-  strcpy(form + l - 1, lenmod);
++  memmove(form + l - 1, lenmod, lm);
+   form[l + lm - 1] = spec;
+   form[l + lm] = '\0';
+ }
+-- 
+2.17.1
+
