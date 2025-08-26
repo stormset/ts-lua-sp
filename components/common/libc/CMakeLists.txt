@@ -22,9 +22,11 @@ compiler_set_freestanding(TARGET c)
 # Add source files to be compiled.
 target_sources(c PRIVATE
         "src/abort.c"
+        "src/abs.c"
         "src/assert.c"
         "src/ctype.c"
         "src/exit.c"
+        "src/locale.c"
         "src/memchr.c"
         "src/memcmp.c"
         "src/memcpy.c"
@@ -34,6 +36,7 @@ target_sources(c PRIVATE
         "src/putchar.c"
         "src/puts.c"
         "src/snprintf.c"
+        "src/strcoll.c"
         "src/strcpy.c"
         "src/strlcat.c"
         "src/strchr.c"
@@ -42,8 +45,11 @@ target_sources(c PRIVATE
         "src/strlen.c"
         "src/strncmp.c"
         "src/strnlen.c"
+        "src/strpbrk.c"
         "src/strrchr.c"
+        "src/strspn.c"
         "src/strstr.c"
+        "src/strtod.c"
         "src/strtok.c"
         "src/strtol.c"
         "src/strtok.c"
@@ -51,6 +57,10 @@ target_sources(c PRIVATE
         "src/strtoul.c"
         "src/strtoull.c"
 )
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "arm")
+    target_sources(c PRIVATE "src/aarch64/setjmp.S")
+endif()
 
 target_compile_definitions(c INTERFACE ENABLE_CDEFSH_FIX)
 
